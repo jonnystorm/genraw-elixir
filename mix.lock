@@ -1,0 +1,3 @@
+%{
+  "procket": {:git, "https://github.com/msantos/procket.git", "41e93841c519e37496a5e0f63a3761b36eec9a6a", []},
+}
