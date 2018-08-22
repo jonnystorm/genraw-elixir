@@ -11,11 +11,14 @@ defmodule GenRaw do
 
     {:ok, fd} =
       :procket.open 0,       # no port
-        interface: erl_if,
         progname:  progname,
         family:    :packet,  # AF_PACKET
         type:      :raw,     # SOCK_RAW
         protocol:  0x0300    # little-endian ETH_P_ALL
+
+    if_index = :packet.ifindex(fd, erl_if)
+
+    :ok = :packet.bind(fd, if_index)
 
     port  = Port.open({:fd, fd, fd}, [:binary])
     state =
@@ -33,8 +36,8 @@ defmodule GenRaw do
 
   @impl true
   def terminate(_, state) do
-    :procket.close state.fd
     Port.close state.port
+    :procket.close state.fd
   end
 
   @impl true
@@ -133,4 +136,7 @@ defmodule GenRaw do
 
   def start_link(interface),
     do: GenServer.start_link(__MODULE__, [interface])
+
+  def stop(pid),
+    do: GenServer.stop pid
 end
