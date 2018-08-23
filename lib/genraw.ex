@@ -28,118 +28,62 @@ defmodule GenRaw do
 
     :ok = :packet.bind(fd, if_index)
 
-    port  = Port.open({:fd, fd, fd}, [:binary])
-    state =
-      %{fd:      fd,
-        port:    port,
-        queue:   :queue.new,
-        qlen:    0,
-        qmax:    100,
-        drops:   0,
-        capture: nil,
-      }
+    state = %{fd: fd, capture: nil}
 
     {:ok, state}
   end
 
   @impl true
-  def terminate(_, state) do
-    Port.close state.port
-    :procket.close state.fd
-  end
-
-  @impl true
-  def handle_info({_port, {:data, data}}, state)
-  do
-    if cap_pid = state.capture do
-      result = Utility.parse_frame data
-
-      send(cap_pid, {:capture, self(), result})
-    end
-
-    if state.qlen < state.qmax do
-      next_state =
-        %{state |
-          queue: :queue.in(data, state.queue),
-          qlen:  state.qlen + 1,
-        }
-
-      {:noreply, next_state}
-    else
-      # Tail drop
-      next_state =
-        %{state|drops: state.drops + 1}
-
-      {:noreply, next_state}
-    end
-  end
+  def terminate(_, state),
+    do: :procket.close state.fd
 
   @impl true
   def handle_call(:recv, _, state) do
-    case :queue.out(state.queue) do
-      {:empty, _} ->
-        {:reply, {:error, :eagain}, state}
+    result = _recv state.fd
 
-      {{:value, v}, next_queue} ->
-        next_state =
-          %{state |
-            queue: next_queue,
-            qlen:  state.qlen - 1,
-          }
-
-        {:reply, {:ok, v}, next_state}
-    end
+    {:reply, result, state}
   end
 
   def handle_call({:snd, data}, _, state) do
-      case :procket.sendto(state.fd, data) do
-        :ok ->
-          {:reply, :ok, state}
+    result = _snd(state.fd, data)
 
-        {:error, _} = error ->
-          {:reply, error, state}
-      end
+    {:reply, result, state}
   end
 
-  def handle_call(:capture, {pid, _}, state) do
-    next_state = %{state|capture: pid}
+  def handle_call(:fd, _, state),
+    do: {:reply, state.fd, state}
 
-    {:reply, :ok, next_state}
-  end
+  defp _recv(fd),
+    do: :procket.recv(fd, 4096)
 
   def recv(pid) when is_pid(pid),
     do: GenServer.call(pid, :recv)
+
+  defp _snd(fd, data),
+    do: :procket.sendto(fd, data)
 
   def snd(pid, data)
       when is_pid(pid)
        and is_binary(data),
     do: GenServer.call(pid, {:snd, data})
 
-  defp _capture do
-    receive do
-      {:capture, _, result} ->
-        captured =
-          case result do
-            {:ok, captured} ->
-              captured
+  defp _capture(fd) do
+    with {:ok, data} <- _recv fd do
+      captured = Utility.parse_frame data
 
-            {:error, {_, captured}} ->
-              captured
-          end
-
-        {:erlang.system_time, captured}
-        |> inspect
-        |> Code.format_string!([line_length: 80])
-        |> IO.puts
-
-        _capture()
+      {:erlang.system_time, captured}
+      |> inspect
+      |> Code.format_string!([line_length: 80])
+      |> IO.puts
     end
+
+    _capture fd
   end
 
   def capture(pid) do
-    :ok = GenServer.call(pid, :capture)
-
-    _capture()
+    pid
+    |> GenServer.call(:fd)
+    |> _capture
   end
 
   def start_link(interface),
