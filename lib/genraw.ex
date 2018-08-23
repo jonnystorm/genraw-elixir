@@ -28,9 +28,7 @@ defmodule GenRaw do
 
     :ok = :packet.bind(fd, if_index)
 
-    state = %{fd: fd, capture: nil}
-
-    {:ok, state}
+    {:ok, %{fd: fd}}
   end
 
   @impl true
