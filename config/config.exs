@@ -10,15 +10,15 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :genraw_ex, key: :value
+#     config :gen_raw_ex, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:genraw_ex, :key)
+#     Application.get_env(:gen_raw_ex, :key)
 #
 # You can also configure a 3rd-party app:
 #
-config :logger, level: :debug
+config :logger, level: :info
 #
 
 # It is also possible to import configuration files, relative to this

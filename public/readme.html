@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.19.3">
+    <title>GenRaw — GenRaw v0.2.0</title>
+    <link rel="stylesheet" href="dist/html-399e30b9b028e3059575.css" />
+    <script src="dist/sidebar_items-dc4f41002b.js"></script>
+    <script async src="dist/html-399e30b9b028e3059575.js"></script>
+    
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<button class="sidebar-button night-mode-toggle">
+  <span class="icon-theme" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Theme</span>
+</button>
+<section class="sidebar">
+
+  <a href="GenRaw.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+GenRaw      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.2.0
+      </h2>
+    </div>
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>GenRaw</h1>
+<p>An Elixir GenServer for using raw packet sockets.</p>
+<p>This module is largely a demo of Michael Santos's excellent
+<a href="https://github.com/msantos/procket"><code>procket</code></a> library for
+Erlang. It really just encodes my knowledge about how to use
+<code>procket</code>, but perhaps someone else will find it valuable.</p>
+<p><strong>N.B.</strong>: Using <code>procket</code> with Erlang ports is <a href="https://bugs.erlang.org/browse/ERL-692"><strong>broken</strong>
+in OTP 21.0</a>.
+However, this was fixed in OTP 21.1.</p>
+<h2 id="installation" class="section-heading">
+  <a href="#installation" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Installation
+</h2>
+
+<p>In your <code>mix.exs</code>, simply add</p>
+<pre><code class="language-elixir">def deps do
+  [ { :gen_raw_ex,
+      git: &quot;https://gitlab.com/jonnystorm/genraw-elixir.git&quot;
+    },
+  ]
+end
+</code></pre>
+<p>Please see <a href="https://github.com/msantos/procket">procket</a> for
+how to set appropriate permissions on the <code>procket</code> binary.</p>
+<p>In case you observe <code>{:error, :einval}</code> when sending data,
+some interfaces may require giving the <code>CAP_SYS_RAWIO</code>
+capability to your <code>beam.smp</code>, in addition to <code>CAP_NET_RAW</code>.
+I discovered this while working on an Asus C101PA with
+Marvell wireless NIC.</p>
+<h2 id="configuration" class="section-heading">
+  <a href="#configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Configuration
+</h2>
+
+<p>By default, GenRaw assumes the <code>procket</code> binary is at
+<code>/usr/local/bin/procket</code>:</p>
+<pre><code class="language-elixir">iex&gt; Application.get_all_env :gen_raw_ex
+[procket_path: &quot;/usr/local/bin/procket&quot;]
+</code></pre>
+<p>Feel free to change this in your <code>config.exs</code>:</p>
+<pre><code class="language-elixir">config :gen_raw_ex,
+  procket_path: &quot;/usr/bin/procket&quot;
+</code></pre>
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.19.3),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  
+  </body>
+</html>
+
