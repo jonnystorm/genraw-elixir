@@ -27,6 +27,7 @@ mix:
     # Download and stage pre-built PLT
     - mkdir -p _build/$MIX_ENV
     - wget -O $PLT_LOCATION https://gitlab.com/jonnystorm/gitlab-elixir-plts/raw/master/$PLT_FILENAME
+    - mix do deps.get, deps.compile
     - mix test
     - mix dialyzer --halt-exit-status
 
