@@ -34,6 +34,10 @@ mix:
     - mix dialyzer --halt-exit-status
 
 pages:
+  stage: deploy
+  script:
+    - mix docs
   artifacts:
     paths:
       - doc
+
