@@ -34,7 +34,7 @@ mix:
 pages:
   stage: deploy
   script:
-    - mic local.hex --force
+    - mix local.hex --force
     - mix deps.get
     - mix docs
   artifacts:
