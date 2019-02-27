@@ -291,11 +291,11 @@ defmodule GenRaw do
   ## Example
 
       iex> data  = "test"
-      iex> len   = byte_size(data)
       iex> frame =
       ...>   <<0xffffffffffff::48,
       ...>     0xc0ff33c0ff33::48,
-      ...>     test::bytes-size(len),
+      ...>     byte_size(data)::16,
+      ...>     data,
       ...>   >>
       iex> GenRaw.send(pid, "eth0", frame)
       :ok
