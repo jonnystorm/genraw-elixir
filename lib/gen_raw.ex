@@ -7,11 +7,11 @@ defmodule GenRaw do
   An Elixir GenServer for using raw packet sockets.
 
   This module is largely a demo of Michael Santos's
-  excellent procket library for Erlang. It really just
-  encodes my knowledge about how to use procket, but perhaps
+  excellent `procket` library for Erlang. It really just
+  encodes my knowledge about how to use `procket`, but perhaps
   someone else will find it valuable.
 
-  **N.B.**: Using procket with Erlang ports is broken in OTP
+  **N.B.**: Using `procket` with Erlang ports is broken in OTP
   21.0. However, this was fixed in OTP 21.1.
   """
 
