@@ -203,7 +203,7 @@ defmodule GenRaw do
   Calling this function on a GenRaw process opened with
   `active: true` will return `{:error, :eopnotsupp}`.
 
-  ## Examples
+  ## Example
 
       iex> filter =
       ...>   &match?([dix: [_, {:src, <<0xc0ff33c0ff33::48>>}, _]], &1)
@@ -268,7 +268,7 @@ defmodule GenRaw do
   and interfaces are not normally configured to accept more
   than 1532 bytes anyway (MTU + 802.3 + 802.1Q + etc.).
 
-  ## Examples
+  ## Example
 
       iex> data  = "test"
       iex> len   = byte_size(data)
@@ -353,7 +353,7 @@ defmodule GenRaw do
   @doc """
   Get the status of GenRaw process `pid`.
 
-  ## Examples
+  ## Example
 
       iex> GenRaw.status(pid)
       :closed
