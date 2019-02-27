@@ -6,8 +6,7 @@ function run
     env MIX_ENV=test ERL_COMPILER_OPTIONS=bin_opt_info \
       mix compile --force &&
     mix test --stale &&
-    env MIX_ENV=test mix dialyzer --halt-exit-status &&
-    mix docs
+    env MIX_ENV=test mix dialyzer --halt-exit-status
 }
 
 clear

@@ -11,6 +11,11 @@ Erlang. It really just encodes my knowledge about how to use
 in OTP 21.0](https://bugs.erlang.org/browse/ERL-692).
 However, this was fixed in OTP 21.1.
 
+Documentation is available at
+[https://jonnystorm.gitlab.io/genraw-elixir](
+ https://jonnystorm.gitlab.io/genraw-elixir
+)
+
 ## Installation
 
 In your `mix.exs`, simply add

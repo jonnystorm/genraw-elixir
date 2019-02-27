@@ -3,6 +3,18 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 defmodule GenRaw do
+  @moduledoc """
+  An Elixir GenServer for using raw packet sockets.
+
+  This module is largely a demo of Michael Santos's
+  excellent procket library for Erlang. It really just
+  encodes my knowledge about how to use procket, but perhaps
+  someone else will find it valuable.
+
+  **N.B.**: Using procket with Erlang ports is broken in OTP
+  21.0. However, this was fixed in OTP 21.1.
+  """
+
   use GenServer
 
   alias GenRaw.Utility
@@ -107,6 +119,12 @@ defmodule GenRaw do
   def handle_call({:send, _, _}, _from, state),
     do: {:reply, {:error, :enotconn}, state}
 
+  def handle_call(:status, _from, %{fd: _} = state),
+    do: {:reply, :open, state}
+
+  def handle_call(:status, _from, state),
+    do: {:reply, :closed, state}
+
   @impl true
   def init(_args),
     do: {:ok, %{}}
@@ -164,8 +182,10 @@ defmodule GenRaw do
   @type pdu :: keyword(non_neg_integer|binary)
 
   @doc """
-  Receive a PDU. If no PDU is in queue, then
-  `{:error, :eagain}` is returned.
+  Receive a PDU.
+
+  If no PDU is in queue, then `{:error, :eagain}` is
+  returned.
 
   Calling `receive/1` on a GenRaw process opened with
   `active: true` will return `{:error, :eopnotsupp}`.
@@ -312,9 +332,11 @@ defmodule GenRaw do
     do: GenServer.stop(pid)
 
   @doc """
-  Open a raw socket with GenRaw process `pid`. This is
-  equivalent to `socket(AF_PACKET, SOCK_RAW, ETH_P_ALL)`.
-  See `man 2 socket` for details.
+  Open a raw socket with GenRaw process `pid`.
+
+  This function is equivalent to
+  `socket(AF_PACKET, SOCK_RAW, ETH_P_ALL)`.  See `man 2
+  socket` for details.
 
   To observe the resulting socket in a shell, try
   `ss -elnp0`.
