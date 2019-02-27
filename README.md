@@ -16,6 +16,37 @@ Documentation is available at
  https://jonnystorm.gitlab.io/genraw-elixir
 )
 
+## Usage
+
+```elixir
+iex> {:ok, pid} = GenRaw.start_link
+{:ok, #PID<0.123.0>}
+iex> GenRaw.open(pid)
+:ok
+iex> GenRaw.receive(pid)
+{:error, :eagain}
+iex> {:ok, data} = GenRaw.receive(pid)
+{ :ok,
+  <<255, 255, 255, 255, 255, 255,
+    192, 255, 51, 192, 255, 51,
+    0, 4,
+    116, 101, 115, 116
+  >>
+}
+iex> GenRaw.receive_parsed(pid)
+{ :ok, [
+    dix: [
+      dst: <<255, 255, 255, 255, 255, 255>>,
+      src: <<192, 255, 51, 192, 255, 51>>,
+      type: 4,
+    ],
+    data: "test",
+  ]
+}
+iex> GenRaw.send(pid, data)
+:ok
+```
+
 ## Installation
 
 In your `mix.exs`, simply add
