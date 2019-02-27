@@ -1,9 +1,8 @@
 image: elixir:latest
 
-variables:
-  MIX_ENV: test
-
 mix:
+  variables:
+    MIX_ENV: test
   script:
     - echo "Elixir v${ELIXIR_VERSION/v/} (compiled with OTP $OTP_VERSION)"
     - export PLT_FILENAME=elixir-${ELIXIR_VERSION/v/}_${OTP_VERSION}.plt
