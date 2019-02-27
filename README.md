@@ -35,11 +35,11 @@ iex> {:ok, data} = GenRaw.receive(pid)
 }
 iex> GenRaw.receive_parsed(pid)
 { :ok, [
-    dix: [
+    dix: %{
       dst: <<255, 255, 255, 255, 255, 255>>,
       src: <<192, 255, 51, 192, 255, 51>>,
       type: 4,
-    ],
+    },
     data: "test",
   ]
 }

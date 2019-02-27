@@ -226,15 +226,15 @@ defmodule GenRaw do
   ## Example
 
       iex> filter =
-      ...>   &match?([dix: [_, {:src, <<0xc0ff33c0ff33::48>>}, _]], &1)
+      ...>   &match?([dix: %{src: <<0xc0ff33c0ff33::48>>}, _], &1)
       iex>
       iex> GenRaw.receive(pid, filter)
       { :ok, [
-          dix: [
+          dix: %{
             dst: <<255, 255, 255, 255, 255, 255>>,
             src: <<192, 255, 51, 192, 255, 51>>,
             type: 4,
-          ],
+          },
           data: "test",
         ]
       }
