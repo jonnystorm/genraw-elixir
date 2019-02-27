@@ -31,7 +31,6 @@ mix:
     - mix dialyzer --halt-exit-status
 
 pages:
-  stage: deploy
   script:
     - mix local.hex --force
     - mix local.rebar --force
