@@ -14,7 +14,7 @@ However, this was fixed in OTP 21.1.
 Documentation is available at
 [https://jonnystorm.gitlab.io/genraw-elixir](
  https://jonnystorm.gitlab.io/genraw-elixir
-)
+).
 
 ## Usage
 
