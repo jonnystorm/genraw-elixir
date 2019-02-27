@@ -13,7 +13,6 @@ defmodule GenRaw.MixProject do
       docs: [
         main: "GenRaw",
         extras: ~w(README.md),
-        output: "public",
         markdown_processor: ExDoc.Markdown.Cmark,
       ],
       # Dialyxir

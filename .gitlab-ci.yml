@@ -33,3 +33,7 @@ mix:
     - mix test
     - mix dialyzer --halt-exit-status
 
+pages:
+  artifacts:
+    paths:
+      - doc

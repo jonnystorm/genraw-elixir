@@ -392,7 +392,7 @@ Functions          </h1>
 </h2>
 
 <pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">interfaces</span><span class="w">
-</span><span class="p" data-group-id="7891864133-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7891864133-2">[</span><span class="s">&quot;lo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eth0&quot;</span><span class="p" data-group-id="7891864133-2">]</span><span class="p" data-group-id="7891864133-1">}</span><span class="w">
+</span><span class="p" data-group-id="9728214154-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9728214154-2">[</span><span class="s">&quot;lo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eth0&quot;</span><span class="p" data-group-id="9728214154-2">]</span><span class="p" data-group-id="9728214154-1">}</span><span class="w">
 </span></code></pre>
   </section>
 </section>
@@ -428,7 +428,7 @@ See <code>man 2 socket</code> for details.</p>
 <p>Setting <code>active: true</code> in <code>opts</code> will send data directly
 to the owner process. In this case, <a href="#open/2"><code>open/2</code></a> returns
 <code>{:ok, port}</code> on success. The data message format is</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="7781023729-1">{</span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7781023729-2">{</span><span class="ss">:data</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p" data-group-id="7781023729-2">}</span><span class="p" data-group-id="7781023729-1">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="6696104987-1">{</span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6696104987-2">{</span><span class="ss">:data</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p" data-group-id="6696104987-2">}</span><span class="p" data-group-id="6696104987-1">}</span><span class="w">
 </span></code></pre>
 <p>where <code>port</code> is the port returned by <a href="#open/2"><code>open/2</code></a> and <code>data</code>
 is a binary.</p>
@@ -460,16 +460,16 @@ is a binary.</p>
   Example
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="8223347685-1">(</span><span class="n">pid</span><span class="p" data-group-id="8223347685-1">)</span><span class="w">
-</span><span class="p" data-group-id="8223347685-2">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="ss">:eagain</span><span class="p" data-group-id="8223347685-2">}</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="8223347685-3">(</span><span class="n">pid</span><span class="p" data-group-id="8223347685-3">)</span><span class="w">
-</span><span class="p" data-group-id="8223347685-4">{</span><span class="w"> </span><span class="ss">:ok</span><span class="p">,</span><span class="w">
-  </span><span class="p" data-group-id="8223347685-5">&lt;&lt;</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="3699427305-1">(</span><span class="n">pid</span><span class="p" data-group-id="3699427305-1">)</span><span class="w">
+</span><span class="p" data-group-id="3699427305-2">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="ss">:eagain</span><span class="p" data-group-id="3699427305-2">}</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="3699427305-3">(</span><span class="n">pid</span><span class="p" data-group-id="3699427305-3">)</span><span class="w">
+</span><span class="p" data-group-id="3699427305-4">{</span><span class="w"> </span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="3699427305-5">&lt;&lt;</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w">
     </span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w"> </span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w">
     </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
     </span><span class="mi">116</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">115</span><span class="p">,</span><span class="mi">116</span><span class="w">
-  </span><span class="p" data-group-id="8223347685-5">&gt;&gt;</span><span class="w">
-</span><span class="p" data-group-id="8223347685-4">}</span><span class="w">
+  </span><span class="p" data-group-id="3699427305-5">&gt;&gt;</span><span class="w">
+</span><span class="p" data-group-id="3699427305-4">}</span><span class="w">
 </span></code></pre>
   </section>
 </section>
@@ -504,18 +504,18 @@ matches, <code>{:error, :eagain}</code> is returned.</p>
 </h2>
 
 <pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="o">&amp;</span><span class="n">match?</span><span class="p" data-group-id="0357382226-1">(</span><span class="p" data-group-id="0357382226-2">[</span><span class="ss">dix</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0357382226-3">[</span><span class="bp">_</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0357382226-4">{</span><span class="ss">:src</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0357382226-5">&lt;&lt;</span><span class="mh">0xc0ff33c0ff33</span><span class="o">::</span><span class="mi">48</span><span class="p" data-group-id="0357382226-5">&gt;&gt;</span><span class="p" data-group-id="0357382226-4">}</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p" data-group-id="0357382226-3">]</span><span class="p" data-group-id="0357382226-2">]</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="0357382226-1">)</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="0357382226-6">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">filter</span><span class="p" data-group-id="0357382226-6">)</span><span class="w">
-</span><span class="p" data-group-id="0357382226-7">{</span><span class="w"> </span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0357382226-8">[</span><span class="w">
-    </span><span class="ss">dix</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0357382226-9">[</span><span class="w">
-      </span><span class="ss">dst</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0357382226-10">&lt;&lt;</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p" data-group-id="0357382226-10">&gt;&gt;</span><span class="p">,</span><span class="w">
-      </span><span class="ss">src</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0357382226-11">&lt;&lt;</span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w"> </span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p" data-group-id="0357382226-11">&gt;&gt;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="o">&amp;</span><span class="n">match?</span><span class="p" data-group-id="7661263017-1">(</span><span class="p" data-group-id="7661263017-2">[</span><span class="ss">dix</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7661263017-3">[</span><span class="bp">_</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7661263017-4">{</span><span class="ss">:src</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7661263017-5">&lt;&lt;</span><span class="mh">0xc0ff33c0ff33</span><span class="o">::</span><span class="mi">48</span><span class="p" data-group-id="7661263017-5">&gt;&gt;</span><span class="p" data-group-id="7661263017-4">}</span><span class="p">,</span><span class="w"> </span><span class="bp">_</span><span class="p" data-group-id="7661263017-3">]</span><span class="p" data-group-id="7661263017-2">]</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="7661263017-1">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt;</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="k">receive</span><span class="p" data-group-id="7661263017-6">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">filter</span><span class="p" data-group-id="7661263017-6">)</span><span class="w">
+</span><span class="p" data-group-id="7661263017-7">{</span><span class="w"> </span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7661263017-8">[</span><span class="w">
+    </span><span class="ss">dix</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7661263017-9">[</span><span class="w">
+      </span><span class="ss">dst</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7661263017-10">&lt;&lt;</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p" data-group-id="7661263017-10">&gt;&gt;</span><span class="p">,</span><span class="w">
+      </span><span class="ss">src</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7661263017-11">&lt;&lt;</span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w"> </span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p" data-group-id="7661263017-11">&gt;&gt;</span><span class="p">,</span><span class="w">
       </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
-    </span><span class="p" data-group-id="0357382226-9">]</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="7661263017-9">]</span><span class="p">,</span><span class="w">
     </span><span class="ss">data</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w">
-  </span><span class="p" data-group-id="0357382226-8">]</span><span class="w">
-</span><span class="p" data-group-id="0357382226-7">}</span><span class="w">
+  </span><span class="p" data-group-id="7661263017-8">]</span><span class="w">
+</span><span class="p" data-group-id="7661263017-7">}</span><span class="w">
 </span></code></pre>
   </section>
 </section>
@@ -550,13 +550,13 @@ than 1532 bytes anyway (MTU + 802.3 + 802.1Q + etc.).</p>
 </h2>
 
 <pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">data</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="n">len</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">byte_size</span><span class="p" data-group-id="5627864547-1">(</span><span class="n">data</span><span class="p" data-group-id="5627864547-1">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="n">len</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">byte_size</span><span class="p" data-group-id="0072745115-1">(</span><span class="n">data</span><span class="p" data-group-id="0072745115-1">)</span><span class="w">
 </span><span class="gp unselectable">iex&gt; </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="p" data-group-id="5627864547-2">&lt;&lt;</span><span class="mh">0xffffffffffff</span><span class="o">::</span><span class="mi">48</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="p" data-group-id="0072745115-2">&lt;&lt;</span><span class="mh">0xffffffffffff</span><span class="o">::</span><span class="mi">48</span><span class="p">,</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">    </span><span class="mh">0xc0ff33c0ff33</span><span class="o">::</span><span class="mi">48</span><span class="p">,</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="w">    </span><span class="n">test</span><span class="o">::</span><span class="n">bytes</span><span class="o">-</span><span class="n">size</span><span class="p" data-group-id="5627864547-3">(</span><span class="n">len</span><span class="p" data-group-id="5627864547-3">)</span><span class="p">,</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="p" data-group-id="5627864547-2">&gt;&gt;</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">send</span><span class="p" data-group-id="5627864547-4">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eth0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">frame</span><span class="p" data-group-id="5627864547-4">)</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">    </span><span class="n">test</span><span class="o">::</span><span class="n">bytes</span><span class="o">-</span><span class="n">size</span><span class="p" data-group-id="0072745115-3">(</span><span class="n">len</span><span class="p" data-group-id="0072745115-3">)</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="p" data-group-id="0072745115-2">&gt;&gt;</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">send</span><span class="p" data-group-id="0072745115-4">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eth0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">frame</span><span class="p" data-group-id="0072745115-4">)</span><span class="w">
 </span><span class="ss">:ok</span><span class="w">
 </span></code></pre>
   </section>
@@ -629,11 +629,11 @@ process.</p>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">status</span><span class="p" data-group-id="1262341760-1">(</span><span class="n">pid</span><span class="p" data-group-id="1262341760-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">status</span><span class="p" data-group-id="8654933608-1">(</span><span class="n">pid</span><span class="p" data-group-id="8654933608-1">)</span><span class="w">
 </span><span class="ss">:closed</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">open</span><span class="p" data-group-id="1262341760-2">(</span><span class="n">pid</span><span class="p" data-group-id="1262341760-2">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">open</span><span class="p" data-group-id="8654933608-2">(</span><span class="n">pid</span><span class="p" data-group-id="8654933608-2">)</span><span class="w">
 </span><span class="ss">:ok</span><span class="w">
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">status</span><span class="p" data-group-id="1262341760-3">(</span><span class="n">pid</span><span class="p" data-group-id="1262341760-3">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">GenRaw</span><span class="o">.</span><span class="n">status</span><span class="p" data-group-id="8654933608-3">(</span><span class="n">pid</span><span class="p" data-group-id="8654933608-3">)</span><span class="w">
 </span><span class="ss">:open</span><span class="w">
 </span></code></pre>
   </section>
