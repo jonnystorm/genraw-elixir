@@ -35,8 +35,5 @@ pages:
     - mix local.hex --force
     - mix local.rebar --force
     - mix do deps.get, deps.compile
-    - mix docs
-  artifacts:
-    paths:
-      - doc
+    - mix docs --output public
 
