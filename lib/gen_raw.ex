@@ -179,7 +179,10 @@ defmodule GenRaw do
       when is_list(opts),
     do: GenServer.start(__MODULE__, [], opts)
 
-  @type pdu :: keyword(non_neg_integer|binary)
+  @type pdu
+    :: keyword(
+         %{required(atom) => non_neg_integer|binary}
+       )
 
   @doc """
   Receive a PDU.
