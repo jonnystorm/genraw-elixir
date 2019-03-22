@@ -9,8 +9,10 @@ defmodule GenRawCheck do
     pid = :erlang.list_to_pid('<0.123.0>')
 
     {:ok, _} = GenRaw.receive(pid)
-    {:ok, _}  = GenRaw.receive_parsed(pid)
-    {:ok, _}  = GenRaw.receive_parsed(pid, &match?([_], &1))
+    {:ok, _} = GenRaw.receive(pid, 2)
+    {:ok, _} = GenRaw.receive_parsed(pid)
+    {:ok, _} = GenRaw.receive_parsed(pid, 2)
+    {:ok, _} = GenRaw.receive_parsed(pid, 1, &match?([_], &1))
 
     :ok   = GenRaw.send(pid, "test", "test")
     :ok   = GenRaw.open(pid)

@@ -8,11 +8,11 @@ defmodule GenRaw do
 
   This module is largely a demo of Michael Santos's
   excellent `procket` library for Erlang. It really just
-  encodes my knowledge about how to use `procket`, but perhaps
-  someone else will find it valuable.
+  encodes my knowledge about how to use `procket`, but
+  perhaps someone else will find it valuable.
 
-  **N.B.**: Using `procket` with Erlang ports is broken in OTP
-  21.0. However, this was fixed in OTP 21.1.
+  **N.B.**: Using `procket` with Erlang ports is broken in
+  OTP 21.0. However, this was fixed in OTP 21.1.
   """
 
   use GenServer
@@ -22,47 +22,64 @@ defmodule GenRaw do
   defp procket_path,
     do: Application.get_env(:gen_raw_ex, :procket_path)
 
-  @impl true
-  def handle_call({:open, _}, _from, %{port: _} = state),
-    do: {:reply, {:error, :ealready}, state}
+  def handle_info(
+    {port, {:data, data}},
+    %{port: port} = state
+  ) do
+    if state.q_len < state.max_q_len do
+      next_state =
+        %{state |
+          queue: :queue.in(data, state.queue),
+          q_len: state.q_len + 1,
+        }
+
+      {:noreply, next_state}
+    else
+      next_state =
+        %{state|dropped: state.dropped + 1}
+
+      {:noreply, next_state}
+    end
+  end
 
   def handle_call({:open, _}, _from, %{fd: _} = state),
     do: {:reply, {:error, :ealready}, state}
 
-  def handle_call({:open, target}, _from, state) do
+  def handle_call({:open, target0}, _from, state) do
+    active?   = target0 != nil
+    target    = target0 || self()
     progname  = :binary.bin_to_list(procket_path())
     {:ok, fd} =
-      :procket.open(0,       # no port
-        progname:  progname,
-        family:    :packet,  # AF_PACKET
-        type:      :raw,     # SOCK_RAW
-        protocol:  0x0300    # little-endian ETH_P_ALL
+      :procket.open(0,      # no port
+        progname: progname,
+        family:   :packet,  # AF_PACKET
+        type:     :raw,     # SOCK_RAW
+        protocol: 0x0300    # little-endian ETH_P_ALL
       )
 
-    next_state0 = Map.put(state, :fd, fd)
+    port = Port.open({:fd, fd, fd}, [:binary])
 
-    if target do
-      port = Port.open({:fd, fd, fd}, [:binary])
+    _ = Port.connect(port, target)
 
-      Port.connect(port, target)
+    next_state =
+      state
+      |> Map.put(:fd, fd)
+      |> Map.put(:port, port)
+      |> Map.put(:active, active?)
 
-      next_state =
-        Map.put(next_state0, :port, port)
-
+    if active? do
       {:reply, {:ok, port}, next_state}
     else
-      {:reply, :ok, next_state0}
+      {:reply, :ok, next_state}
     end
   end
 
   def handle_call(:close, _from, %{fd: fd} = state) do
+    _ = Port.close(state.port)
+
     result = :procket.close(fd)
 
-    _ =
-      if port = state[:port],
-        do: Port.close(port)
-
-    next_state = Map.drop(state, [:fd, :port])
+    next_state = Map.drop(state, [:fd, :port, :active])
 
     {:reply, result, next_state}
   end
@@ -70,38 +87,57 @@ defmodule GenRaw do
   def handle_call(:close, _from, state),
     do: {:reply, {:error, :enotconn}, state}
 
-  def handle_call(:receive, _from, %{port: _} = state),
-    do: {:reply, {:error, :eopnotsupp}, state}
-
-  def handle_call(:receive, _from, %{fd: fd} = state) do
-    with {:ok, } = reply <- :procket.recv(fd, 4096) do
-      {:reply, reply, state}
-    else
-      error ->
-        {:reply, error, state}
-    end
-  end
-
-  def handle_call(:receive, _from, state),
-    do: {:reply, {:error, :enotconn}, state}
-
-  def handle_call({:receive_parsed, _},
+  def handle_call(
+    {:receive, _},
     _from,
-    %{port: _} = state
+    %{active: true} = state
   ),
     do: {:reply, {:error, :eopnotsupp}, state}
 
   def handle_call(
-    {:receive_parsed, filter},
+    {:receive, count0},
     _from,
-    %{fd: fd} = state
+    %{active: false} = state
   ) do
-    result = _receive_parsed(fd, filter)
+    count = min(state.q_len, count0)
 
-    {:reply, result, state}
+    {out_q, next_q} =
+      :queue.split(count, state.queue)
+
+    next_state =
+      %{state |
+        queue:    next_q,
+        q_len:    state.q_len - count,
+        serviced: state.serviced + count,
+      }
+
+    out = :queue.to_list(out_q)
+
+    {:reply, {:ok, out}, next_state}
   end
 
-  def handle_call({:receive_parsed, _}, _from, state),
+  def handle_call({:receive, _}, _from, state),
+    do: {:reply, {:error, :enotconn}, state}
+
+  def handle_call(
+    {:receive_parsed, _, _},
+    _from,
+    %{active: true} = state
+  ),
+    do: {:reply, {:error, :eopnotsupp}, state}
+
+  def handle_call(
+    {:receive_parsed, filter, count},
+    _from,
+    %{active: false} = state
+  ) do
+    {reply, next_state} =
+      _find_match(state, filter, count, [])
+
+    {:reply, reply, next_state}
+  end
+
+  def handle_call({:receive_parsed, _, _}, _from, state),
     do: {:reply, {:error, :enotconn}, state}
 
   def handle_call(
@@ -125,28 +161,77 @@ defmodule GenRaw do
   def handle_call(:status, _from, state),
     do: {:reply, :closed, state}
 
-  @impl true
-  def init(_args),
-    do: {:ok, %{}}
+  def handle_call(:stats, _from, state) do
+    reply =
+      %{queue_length: state.q_len,
+        max_queue_length: state.max_q_len,
+        serviced: state.serviced,
+        dropped: state.dropped,
+      }
 
-  @impl true
-  def terminate(_, state) do
-    if fd = state[:fd],
-      do: :procket.close(fd)
-
-    if port = state[:port],
-      do: Port.close(port)
+    {:reply, reply, state}
   end
 
-  defp _receive_parsed(fd, filter) do
-    with {:ok, data} <- :procket.recv(fd, 4096) do
-      parsed = Utility.parse_frame(data)
+  def init(_args) do
+    state =
+      %{queue:     :queue.new,
+        q_len:     0,
+        serviced:  0,
+        dropped:   0,
+        max_q_len: 50,
+      }
 
-      if filter.(parsed) do
-        {:ok, parsed}
-      else
-        _receive_parsed(fd, filter)
-      end
+    {:ok, state}
+  end
+
+  def terminate(_, state) do
+    if fd = state[:fd] do
+      Port.close(state.port)
+      :procket.close(fd)
+    end
+  end
+
+  defp _find_match(state, _filter, count, acc)
+      when length(acc) == count
+  do
+    next_state =
+      %{state |
+        serviced: state.serviced + length(acc),
+      }
+
+    {{:ok, Enum.reverse(acc)}, next_state}
+  end
+
+  defp _find_match(state, filter, count, acc)
+      when length(acc) < count
+  do
+    case :queue.out(state.queue) do
+      {{:value, data}, next_q} ->
+        next_state =
+          %{state |
+            queue: next_q,
+            q_len: state.q_len - 1,
+          }
+
+        parsed = Utility.parse_frame(data)
+
+        if filter.(parsed) do
+          next_acc = [parsed|acc]
+
+          _find_match(next_state, filter, count, next_acc)
+        else
+          _find_match(next_state, filter, count, acc)
+        end
+
+      {:empty, _} ->
+        next_state =
+          %{state |
+            serviced: state.serviced + length(acc),
+          }
+
+        if length(acc) > 0,
+          do: {{:ok, Enum.reverse(acc)}, next_state},
+        else: {{:error, :eagain}, state}
     end
   end
 
@@ -179,10 +264,8 @@ defmodule GenRaw do
       when is_list(opts),
     do: GenServer.start(__MODULE__, [], opts)
 
-  @type pdu
-    :: keyword(
-         %{required(atom) => non_neg_integer|binary}
-       )
+  @type count  :: pos_integer
+  @type data   :: binary
 
   @doc """
   Receive a PDU.
@@ -199,22 +282,31 @@ defmodule GenRaw do
       {:error, :eagain}
       iex> GenRaw.receive(pid)
       { :ok,
-        <<255, 255, 255, 255, 255, 255,
-          192, 255, 51, 192, 255, 51,
-          0, 4,
-          116,101,115,116
-        >>
+        [ <<255, 255, 255, 255, 255, 255,
+            192, 255, 51, 192, 255, 51,
+            0, 4,
+            116,101,115,116
+          >>,
+        ]
       }
 
   """
-  @spec receive(pid)
-      :: {:ok, pdu}
+  @spec receive(pid, count)
+      :: {:ok, [data]}
        | {:error, any}
-  def receive(pid)
-      when is_pid(pid),
-    do: GenServer.call(pid, :receive)
+  def receive(pid, count \\ 1)
 
-  @type filter :: function
+  def receive(pid, count)
+      when is_pid(pid)
+       and is_integer(count) and count > 0,
+    do: GenServer.call(pid, {:receive, count})
+
+  @type filter :: (... -> boolean)
+
+  @type pdu
+    :: keyword(
+         %{required(atom) => non_neg_integer|binary}
+       )
 
   @doc """
   Receive a parsed PDU.
@@ -231,28 +323,33 @@ defmodule GenRaw do
       iex> filter =
       ...>   &match?([dix: %{src: <<0xc0ff33c0ff33::48>>}, _], &1)
       iex>
-      iex> GenRaw.receive(pid, filter)
-      { :ok, [
+      iex> GenRaw.receive(pid, 1, filter)
+      { :ok, [[
           dix: %{
             dst: <<255, 255, 255, 255, 255, 255>>,
             src: <<192, 255, 51, 192, 255, 51>>,
             type: 4,
           },
           data: "test",
-        ]
+        ]]
       }
 
   """
-  @spec receive_parsed(pid, filter)
-      :: {:ok, pdu}
+  @spec receive_parsed(pid, count, filter)
+      :: {:ok, [pdu]}
        | {:error, any}
-  def receive_parsed(pid, filter \\ fn _ -> true end)
+  def receive_parsed(
+    pid,
+    count \\ 1,
+    filter \\ fn _ -> true end
+  )
 
-  def receive_parsed(pid, filter)
+  def receive_parsed(pid, count, filter)
       when is_pid(pid)
+       and is_integer(count) and count > 0
        and is_function(filter)
   do
-    GenServer.call(pid, {:receive_parsed, filter})
+    GenServer.call(pid, {:receive_parsed, filter, count})
   end
 
   @doc """
@@ -277,7 +374,6 @@ defmodule GenRaw do
   end
 
   @type if_name :: binary
-  @type data    :: binary
 
   @doc """
   Send `data` from interface `if_name`.
@@ -393,6 +489,32 @@ defmodule GenRaw do
   def status(pid)
       when is_pid(pid),
     do: GenServer.call(pid, :status)
+
+  @type stats
+    :: %{queue_length: non_neg_integer,
+         max_queue_length: pos_integer,
+         serviced: non_neg_integer,
+         dropped: non_neg_integer,
+       }
+
+  @doc """
+  Get queue statistics for GenRaw process `pid`.
+
+  ## Example
+
+      iex> GenRaw.stats(pid)
+      %{queue_length: 31,
+        max_queue_length: 50,
+        serviced: 82384,
+        dropped: 37,
+      }
+
+  """
+  @spec stats(pid)
+    :: stats
+  def stats(pid)
+      when is_pid(pid),
+    do: GenServer.call(pid, :stats)
 
   @doc """
   Close a raw socket at GenRaw process `pid`.
